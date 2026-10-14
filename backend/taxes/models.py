@@ -78,6 +78,36 @@ class Impot(models.Model):
         self.save(update_fields=["statut"])
 
 
+class DeclarationActivite(models.Model):
+    """Déclaration d'activité d'une entreprise par un contribuable."""
+
+    class Statut(models.TextChoices):
+        ENREGISTREE = "enregistree", "Enregistrée"
+
+    utilisateur = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="declarations_activite",
+        verbose_name="déclarant",
+    )
+    nom_declarant = models.CharField("nom complet du déclarant", max_length=150)
+    ninea = models.CharField("NINEA", max_length=30)
+    adresse_entreprise = models.CharField("adresse de l'entreprise", max_length=255)
+    reference = models.CharField("référence", max_length=30, unique=True)
+    statut = models.CharField(
+        max_length=20, choices=Statut.choices, default=Statut.ENREGISTREE
+    )
+    date_declaration = models.DateTimeField("date de déclaration", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "déclaration d'activité"
+        verbose_name_plural = "déclarations d'activité"
+        ordering = ["-date_declaration"]
+
+    def __str__(self):
+        return f"{self.reference} - {self.nom_declarant}"
+
+
 class Notification(models.Model):
     """Rappel d'échéance ou confirmation envoyée au contribuable."""
 

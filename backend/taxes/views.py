@@ -2,10 +2,14 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import CategorieImpot, Impot, Notification
+from django.utils import timezone
+
+from .models import CategorieImpot, DeclarationActivite, Impot, Notification
 from .serializers import (
     CategorieImpotSerializer,
+    CreationDeclarationActiviteSerializer,
     CreationImpotSerializer,
+    DeclarationActiviteSerializer,
     ImpotSerializer,
     NotificationSerializer,
 )
@@ -70,6 +74,55 @@ class ImpotViewSet(
                 "total_paye": total_paye,
                 "nombre_impayes": impots.exclude(statut=Impot.Statut.PAYE).count(),
                 "nombre_en_retard": nb_en_retard,
+            }
+        )
+
+
+class DeclarationActiviteViewSet(viewsets.ModelViewSet):
+    """
+    Déclaration d'activité d'entreprise.
+    Un contribuable ne voit, ne modifie et ne supprime que ses propres
+    déclarations ; l'administrateur voit tout.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreationDeclarationActiviteSerializer
+        return DeclarationActiviteSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        declaration = serializer.save()
+        return Response(
+            DeclarationActiviteSerializer(declaration).data, status=status.HTTP_201_CREATED
+        )
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = DeclarationActivite.objects.select_related("utilisateur")
+        if not user.is_staff:
+            qs = qs.filter(utilisateur=user)
+        return qs
+
+    @action(detail=False, methods=["get"])
+    def resume(self, request):
+        """Tableau de bord : nombre total et déclarations du mois en cours."""
+        declarations = self.get_queryset()
+        maintenant = timezone.localtime()
+        nombre_ce_mois = declarations.filter(
+            date_declaration__year=maintenant.year,
+            date_declaration__month=maintenant.month,
+        ).count()
+        return Response(
+            {
+                "nombre_total": declarations.count(),
+                "nombre_enregistrees": declarations.filter(
+                    statut=DeclarationActivite.Statut.ENREGISTREE
+                ).count(),
+                "nombre_ce_mois": nombre_ce_mois,
             }
         )
 

@@ -726,6 +726,11 @@ input:disabled {
   font-family: "Consolas", monospace;
   font-size: 0.85rem;
 }
+.actions-tableau {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
 
 .vide {
   background: var(--carte);

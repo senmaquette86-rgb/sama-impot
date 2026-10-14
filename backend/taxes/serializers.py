@@ -3,7 +3,7 @@ import uuid
 
 from rest_framework import serializers
 
-from .models import CategorieImpot, Impot, Notification
+from .models import CategorieImpot, DeclarationActivite, Impot, Notification
 
 
 class CategorieImpotSerializer(serializers.ModelSerializer):
@@ -58,6 +58,36 @@ class CreationImpotSerializer(serializers.ModelSerializer):
             "date_echeance", datetime.date.today() + datetime.timedelta(days=30)
         )
         validated_data["reference"] = f"IMP-{uuid.uuid4().hex[:8].upper()}"
+        return super().create(validated_data)
+
+
+class DeclarationActiviteSerializer(serializers.ModelSerializer):
+    statut_libelle = serializers.SerializerMethodField()
+    declarant = serializers.CharField(source="utilisateur.nom_complet", read_only=True)
+
+    class Meta:
+        model = DeclarationActivite
+        fields = [
+            "id", "reference", "nom_declarant", "ninea", "adresse_entreprise",
+            "statut", "statut_libelle", "declarant", "date_declaration",
+        ]
+        read_only_fields = ["reference", "statut", "date_declaration"]
+
+    def get_statut_libelle(self, obj):
+        return DeclarationActivite.Statut(obj.statut).label
+
+
+class CreationDeclarationActiviteSerializer(serializers.ModelSerializer):
+    """Enregistrement d'une déclaration d'activité par le contribuable lui-même."""
+
+    class Meta:
+        model = DeclarationActivite
+        fields = ["id", "nom_declarant", "ninea", "adresse_entreprise", "reference"]
+        read_only_fields = ["id", "reference"]
+
+    def create(self, validated_data):
+        validated_data["utilisateur"] = self.context["request"].user
+        validated_data["reference"] = f"DECL-{uuid.uuid4().hex[:8].upper()}"
         return super().create(validated_data)
 
 

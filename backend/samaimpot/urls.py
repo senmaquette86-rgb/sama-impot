@@ -5,7 +5,12 @@ from rest_framework.routers import DefaultRouter
 
 from accounts.views import UtilisateurAdminListView
 from payments.views import PaiementViewSet
-from taxes.views import CategorieImpotViewSet, ImpotViewSet, NotificationViewSet
+from taxes.views import (
+    CategorieImpotViewSet,
+    DeclarationActiviteViewSet,
+    ImpotViewSet,
+    NotificationViewSet,
+)
 
 
 def api_root(request):
@@ -21,6 +26,7 @@ def api_root(request):
                 "impots": "/api/impots/",
                 "categories": "/api/categories/",
                 "paiements": "/api/paiements/",
+                "declarations": "/api/declarations/",
                 "notifications": "/api/notifications/",
                 "utilisateurs": "/api/utilisateurs/ (admin)",
                 "administration": "/admin/",
@@ -33,6 +39,7 @@ router = DefaultRouter()
 router.register("impots", ImpotViewSet, basename="impot")
 router.register("categories", CategorieImpotViewSet, basename="categorie")
 router.register("paiements", PaiementViewSet, basename="paiement")
+router.register("declarations", DeclarationActiviteViewSet, basename="declaration")
 router.register("notifications", NotificationViewSet, basename="notification")
 
 urlpatterns = [

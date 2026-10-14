@@ -27,4 +27,5 @@ export const classeStatut = {
   reussi: "badge badge-vert",
   en_attente: "badge badge-orange",
   echoue: "badge badge-rouge",
+  enregistree: "badge badge-vert",
 };

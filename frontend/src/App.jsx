@@ -11,6 +11,7 @@ import TableauBord from "./pages/TableauBord.jsx";
 import Impots from "./pages/Impots.jsx";
 import Paiement from "./pages/Paiement.jsx";
 import PayerImpot from "./pages/PayerImpot.jsx";
+import DeclarationActivite from "./pages/DeclarationActivite.jsx";
 import Historique from "./pages/Historique.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Profil from "./pages/Profil.jsx";
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/impots" element={<Impots />} />
         <Route path="/payer" element={<PayerImpot />} />
         <Route path="/impots/:id/paiement" element={<Paiement />} />
+        <Route path="/declaration-activite" element={<DeclarationActivite />} />
         <Route path="/historique" element={<Historique />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profil" element={<Profil />} />

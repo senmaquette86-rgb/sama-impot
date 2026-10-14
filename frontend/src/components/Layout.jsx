@@ -14,6 +14,7 @@ export default function Layout() {
     { to: "/tableau-de-bord", label: "Tableau de bord" },
     { to: "/impots", label: "Mes impôts" },
     { to: "/payer", label: "Payer un impôt" },
+    { to: "/declaration-activite", label: "Déclaration d'activité" },
     { to: "/historique", label: "Historique" },
     { to: "/notifications", label: "Notifications" },
     { to: "/profil", label: "Profil" },
