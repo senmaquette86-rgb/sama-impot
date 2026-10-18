@@ -70,6 +70,26 @@ npm run dev
 
 L'interface est disponible sur `http://localhost:5173`.
 
+### 3. Après chaque `git pull` (travail en groupe)
+
+```bash
+cd backend
+.venv\Scripts\activate           # Linux/Mac : source .venv/bin/activate
+pip install -r requirements.txt  # nouvelles dépendances éventuelles
+python manage.py migrate         # nouvelles tables (ex. Déclaration d'activité)
+python manage.py seed_demo       # mêmes comptes de démo pour tout le monde
+cd ../frontend
+npm install
+```
+
+> - Le fichier `.env` n'est **jamais** sur GitHub (il contient des secrets) :
+>   chacun le crée à partir de `.env.example`.
+> - Chaque membre a **sa propre base SQLite** : un compte créé chez l'un
+>   n'existe pas chez les autres. Utilisez les comptes de démonstration
+>   ci-dessous pour avoir les mêmes données.
+> - À l'inscription, le code de vérification s'affiche dans le **terminal
+>   du serveur Django** (pas par email, sauf configuration SMTP).
+
 ---
 
 ## Utilisation

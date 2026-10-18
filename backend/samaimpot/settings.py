@@ -165,6 +165,10 @@ CORS_ALLOWED_ORIGINS = [
     if o.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
+# En développement, Vite peut démarrer sur 5174, 5175... si 5173 est occupé :
+# on accepte donc localhost / 127.0.0.1 sur n'importe quel port.
+if DEBUG:
+    CORS_ALLOWED_ORIGIN_REGEXES = [r"^http://(localhost|127\.0\.0\.1):\d+$"]
 if env_bool("CORS_ALLOW_ALL", False):
     CORS_ALLOW_ALL_ORIGINS = True
 
